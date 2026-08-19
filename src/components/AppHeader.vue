@@ -1,31 +1,44 @@
 <script setup>
-import SearchBar from './SearchBar.vue';
+import nespressoLogo from '../assets/icons/nespresso-logo.png';
 import CatalogDropdown from './CatalogDropdown.vue';
-import FilterButton from './FilterButton.vue';
+import { useMasterData } from '../composables/useMasterData';
 
-defineEmits(['navigate']);
+const emit = defineEmits(['navigate']);
+const { searchQuery, triggerSearch, isFilterOpen } = useMasterData();
+
+const handleSearchEnter = () => {
+  triggerSearch();
+  emit('navigate', 'catalog');
+};
+
+const goHome = () => {
+  emit('navigate', 'collections');
+};
 </script>
 
 <template>
   <header class="app-header">
-    <div class="header-container">
-      <!-- Nespresso N Icon -->
-      <div class="brand-logo" @click="$emit('navigate', 'welcome')" title="Return to Welcome">
-        <svg class="logo-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
-        </svg>
-      </div>
+    <div class="header-left" @click="goHome">
+      <img :src="nespressoLogo" alt="Nespresso" class="header-logo" />
+    </div>
 
-      <!-- Search Bar -->
-      <div class="search-wrapper">
-        <SearchBar />
+    <div class="header-center">
+      <div class="search-box">
+        <input 
+          v-model="searchQuery" 
+          type="text" 
+          placeholder="Search Product ID, Name, Keyword..." 
+          @keyup.enter="handleSearchEnter"
+        />
+        <span class="search-icon" @click="handleSearchEnter">🔍</span>
       </div>
+    </div>
 
-      <!-- Header Actions -->
-      <div class="header-actions">
-        <CatalogDropdown @navigate="$emit('navigate', $event)" />
-        <FilterButton />
-      </div>
+    <div class="header-right">
+      <CatalogDropdown @navigate="$emit('navigate', $event)" />
+      <button class="filter-btn" @click="isFilterOpen = true">
+        FILTER <span class="filter-icon">∇</span>
+      </button>
     </div>
   </header>
 </template>
@@ -36,42 +49,70 @@ defineEmits(['navigate']);
   height: 64px;
   display: flex;
   align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 0 32px;
-}
-
-.header-container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  padding: 0 32px;
+  box-sizing: border-box;
 }
 
-.brand-logo {
+.header-left {
   cursor: pointer;
   display: flex;
   align-items: center;
 }
 
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  color: #ffffff;
+.header-logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
 }
 
-.search-wrapper {
+.header-center {
   flex: 1;
-  max-width: 420px;
+  max-width: 380px;
+  margin: 0 24px;
 }
 
-.header-actions {
+.search-box {
+  position: relative;
+  width: 100%;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 36px 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #ffffff;
+  background: #ffffff;
+  color: #333333;
+  font-size: 0.85rem;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8c6e43;
+  cursor: pointer;
+}
+
+.header-right {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+
+.filter-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
 }
 </style>

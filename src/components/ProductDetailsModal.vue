@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
 import { useMasterData } from '../composables/useMasterData';
 
 const { selectedProduct } = useMasterData();
@@ -6,85 +7,101 @@ const { selectedProduct } = useMasterData();
 const closeModal = () => {
   selectedProduct.value = null;
 };
+
+const handleKeyDown = (e) => {
+  if (e.key === 'Escape' && selectedProduct.value) {
+    closeModal();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+});
 </script>
 
 <template>
-  <div v-if="selectedProduct" class="modal-overlay" @click.self="closeModal">
-    <div class="modal-card">
-      <button class="close-btn" @click="closeModal">✕</button>
+  <Teleport to="body">
+    <div v-if="selectedProduct" class="modal-overlay" @click.self="closeModal">
+      <div class="modal-card">
+        <button class="close-btn" @click="closeModal">✕</button>
 
-      <div class="modal-body">
-        <!-- Left Image Preview -->
-        <div class="image-container">
-          <img 
-            v-if="selectedProduct.image || selectedProduct.imageUrl" 
-            :src="selectedProduct.image || selectedProduct.imageUrl" 
-            :alt="selectedProduct.name || 'Product Image'" 
-            class="product-image"
-          />
-          <div v-else class="placeholder-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
+        <div class="modal-body">
+          <!-- Left Image Preview -->
+          <div class="image-container">
+            <img 
+              v-if="selectedProduct.image || selectedProduct.imageUrl" 
+              :src="selectedProduct.image || selectedProduct.imageUrl" 
+              :alt="selectedProduct.name || 'Product Image'" 
+              class="product-image"
+            />
+            <div v-else class="placeholder-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
           </div>
-        </div>
 
-        <!-- Right Product Details -->
-        <div class="details-container">
-          <h2 class="title">PRODUCT DETAILS</h2>
+          <!-- Right Product Details -->
+          <div class="details-container">
+            <h2 class="title">PRODUCT DETAILS</h2>
 
-          <div class="field-list">
-            <div class="field-pill">
-              <span class="label">Product ID:</span>
-              <span class="value">{{ selectedProduct.id || 'N/A' }}</span>
-            </div>
+            <div class="field-list">
+              <div class="field-pill">
+                <span class="label">Product ID:</span>
+                <span class="value">{{ selectedProduct.id || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">Product name:</span>
-              <span class="value">{{ selectedProduct.name || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">Product name:</span>
+                <span class="value">{{ selectedProduct.name || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">Category:</span>
-              <span class="value">{{ selectedProduct.category || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">Category:</span>
+                <span class="value">{{ selectedProduct.category || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">Collection:</span>
-              <span class="value">{{ selectedProduct.collection || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">Collection:</span>
+                <span class="value">{{ selectedProduct.collection || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">Dimension:</span>
-              <span class="value">{{ selectedProduct.dimension || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">Dimension:</span>
+                <span class="value">{{ selectedProduct.dimension || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">Capacity:</span>
-              <span class="value">{{ selectedProduct.capacity || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">Capacity:</span>
+                <span class="value">{{ selectedProduct.capacity || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">Color:</span>
-              <span class="value">{{ selectedProduct.color || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">Color:</span>
+                <span class="value">{{ selectedProduct.color || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">View Type:</span>
-              <span class="value">{{ selectedProduct.viewType || 'N/A' }}</span>
-            </div>
+              <div class="field-pill">
+                <span class="label">View Type:</span>
+                <span class="value">{{ selectedProduct.viewType || 'N/A' }}</span>
+              </div>
 
-            <div class="field-pill">
-              <span class="label">File Type:</span>
-              <span class="value">{{ selectedProduct.fileType || '' }}</span>
+              <div class="field-pill">
+                <span class="label">File Type:</span>
+                <span class="value">{{ selectedProduct.fileType || '' }}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <style scoped>
